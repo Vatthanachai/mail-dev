@@ -22,6 +22,12 @@ Provider selection uses the project's `.env`; see the planned [.env.example](.en
 
 Multi-replica deployments need an appropriate shared database and file storage, and protected shared Data Protection keys when cookies or antiforgery are used. SQLite, node-local Volume storage, and InMemory cache have replica limitations; see the architecture guide before selecting them.
 
+## Planned MailDev Server
+
+Phase 1 will capture and inspect development email through an SMTP listener and API, with a POP3 server for mail clients to retrieve messages. POP3 is a retrieval protocol; it does not send mail. Phase 2 is required after phase 1 acceptance and will add real external delivery through SMTP/API. Real delivery is planned as disabled by default, and its transport and activation policy remain decisions.
+
+Both phases remain unimplemented. SMTP and POP3 require TCP listeners and appropriate Docker/k3s/k8s TCP exposure alongside HTTP; the logical tiers and all listeners remain in one monolith. The existing `.env` provider contracts apply. See the [requirements](docs/requirements/maildev-server.md), [PLAN](docs/plans/maildev-server/PLAN.md), and [Tasks](docs/plans/maildev-server/Tasks.md).
+
 ## Development and Delivery
 
 Use TDD (Red → Green → Refactor), SOLID/OOP, and at least 80% aggregate executable line coverage across production projects, including the Web host and PageModels. Critical browser journeys require separate functional tests. Coverage collection and enforcement are planned; no coverage result has been measured. Follow PM → BA → Dev → QA → SEC → DocKeeper, with fixes returning through the relevant verification stages.
@@ -35,5 +41,6 @@ Use Git Flow and open development PRs into `develop` only after integrating the 
 - [Current PM intake](docs/intake/razor-monolith.md), [requirements](docs/requirements/dotnet10-platform.md), [PLAN](docs/plans/dotnet10-platform/PLAN.md), and [Tasks](docs/plans/dotnet10-platform/Tasks.md)
 - [Dev handoff](docs/implementation/razor-monolith.md), [QA revision review](docs/qa/razor-monolith-revision.md), and [SEC review](docs/security/razor-monolith.md)
 - [Current delivery notes](docs/delivery/razor-monolith.md) and [project status](docs/project-status.md)
+- MailDev Server: [intake](docs/intake/maildev-server.md), [requirements](docs/requirements/maildev-server.md), [PLAN](docs/plans/maildev-server/PLAN.md), [Tasks](docs/plans/maildev-server/Tasks.md), [Dev review](docs/implementation/maildev-server.md), [QA review](docs/qa/maildev-server.md), [SEC review](docs/security/maildev-server.md), and [delivery notes](docs/delivery/maildev-server.md)
 
-The earlier [API-only delivery](docs/delivery/dotnet10-platform.md) and its QA/SEC reviews are historical and do not approve the current monolith revision. Current QA and SEC passes cover documentation and security design only, not a running implementation.
+The earlier [API-only delivery](docs/delivery/dotnet10-platform.md) and its QA/SEC reviews are historical. MailDev Server QA and SEC passes cover its plan and security design only, not a running implementation.
