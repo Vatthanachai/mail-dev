@@ -5,6 +5,12 @@
 
 # dotenv files
 .env
+.env.*
+!.env.example
+
+# Local persistent data and coverage reports
+/data/
+/artifacts/
 
 # User-specific files
 *.rsuser

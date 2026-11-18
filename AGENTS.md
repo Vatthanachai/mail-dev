@@ -2,42 +2,41 @@
 
 ## Agent Roles
 
-Use `ba`, `dev`, `qa`, and `dockeeper` as appropriate; see [workflow](docs/agent-workflow.md). Definitions live in `.codex/agents/`.
+The primary agent is PM. Follow [workflow](docs/agent-workflow.md): PM intake → BA requirements/PLAN/Tasks → Dev → QA → SEC → DocKeeper. Resolve findings through Dev/QA/SEC. Definitions live in `.codex/agents/`.
 
 ## Project Structure & Module Organization
 
-This project will be developed in Rust and run in Docker. Application code, Cargo manifests, and Docker configuration have not been added yet; the existing `.gitignore` is a generic Visual Studio template.
+The planned stack is a C#/.NET 10 monolith: Razor Pages UI and API Controllers in one host/image, with N-Tier libraries. An empty solution shell exists; implementation is planned. See [architecture](docs/architecture.md).
 
-Place application code in `src/`, integration tests in `tests/`, and supporting documentation in `docs/`. Use `src/main.rs` for the executable entry point and `src/lib.rs` for shared library code when needed. Keep `Cargo.toml`, `Cargo.lock`, `Dockerfile`, and `.dockerignore` at the repository root.
+Use `src/MailDev.Web/` for `Pages/`, `Controllers/`, and `wwwroot/`; keep Application, Domain, and Infrastructure as class libraries under `src/`. PageModels and Controllers share Application services through DI, without server-side loopback HTTP. Keep provider SDKs outside business logic and tests in `tests/`.
 
 ## Build, Test, and Development Commands
 
-Once `Cargo.toml` and Docker configuration exist, use:
+After the solution, locked dependencies, and tooling are introduced, run from the root:
 
-- `cargo build --locked` - compile with committed dependency versions.
-- `cargo run` - run the application locally.
-- `cargo test --locked` - run unit, integration, and documentation tests.
-- `cargo fmt --check` - check formatting; use `cargo fmt` to apply it.
-- `cargo clippy --all-targets -- -D warnings` - reject lint warnings.
-- `docker build -t maildev .` - build the container image.
-- `docker run --rm --env-file .env maildev` - run with local configuration, when required.
+- `dotnet restore --locked-mode` - restore committed dependency versions.
+- `dotnet build -c Release --no-restore -warnaserror` - build with warnings treated as errors.
+- `dotnet test -c Release --no-build` - run configured tests.
+- `dotnet format --verify-no-changes` - check formatting.
+- `docker build -t maildev .` - build the image once a Dockerfile exists.
+- `docker run --rm --env-file .env maildev` - inject configuration; add documented ports and volumes.
 
-Document the Rust toolchain, runtime variables, and required port mappings in `README.md` when implemented.
+Commands are planned, not runtime verification. See [standards](docs/development-standards.md) for coverage prerequisites and enforcement.
 
 ## Coding Style & Naming Conventions
 
-Use rustfmt defaults with four-space indentation. Name modules, files, and functions in `snake_case`, types and traits in `PascalCase`, and constants in `SCREAMING_SNAKE_CASE`. Keep modules focused and propagate recoverable errors with `Result` and `?`. Avoid `unwrap()` and `expect()` in production paths unless the invariant is documented.
+Use four spaces, nullable reference types, `PascalCase` types/public members, `camelCase` locals/parameters, and `Async` method suffixes. Use `.editorconfig`, dotnet format, analyzers, DI and SOLID/OOP. Keep PageModels/Controllers thin; propagate cancellation through I/O.
 
 ## Testing Guidelines
 
-Use Rust's built-in test framework: unit tests in module-local `#[cfg(test)]` blocks and integration tests in `tests/`. Name tests after observable behavior, such as `rejects_invalid_configuration`. Add regression tests for bug fixes. Keep default tests independent of external services; document separate container-dependent checks. No numerical coverage threshold is established.
+Use TDD and xUnit unit/contract/integration tests, plus critical browser journeys. Test Razor forms/routes, APIs and every provider. Require aggregate production line coverage ≥80% using Coverlet and merged ReportGenerator reports, including Web/PageModels. QA then SEC precede DocKeeper/PR. Documentation-only runtime checks are not applicable.
 
 ## Commit & Pull Request Guidelines
 
-The repository has no commits yet. Use concise, imperative commit subjects, such as `Add Docker build for Rust service`.
-
-Pull requests should describe the change, its purpose, and validation performed. Link relevant issues and include screenshots for visible UI changes. Identify any setup or configuration changes.
+Use Git Flow: `feature/<slug>` from `develop`; reserve `main` for releases. Before every PR into `develop`, fetch/integrate latest `origin/develop`, resolve conflicts, and repeat affected QA/SEC checks. Include requirement/task links, validation and conflict-check SHAs; see [Git Flow](docs/git-flow.md).
 
 ## Security & Configuration
 
-Commit `Cargo.lock` for reproducible application builds. Exclude `target/`, secrets, and local `.env` files from Git and Docker build contexts. Provide `.env.example` with placeholders. Use multi-stage Docker builds and a non-root runtime user; never bake credentials into images.
+Select PostgreSQL/SQLite, Volume/S3/Azure Blob Storage, and InMemory/Redis through validated `.env` options. Explicitly inject/load `.env`; never commit secrets or silently fall back between providers. Commit package lockfiles; exclude `bin/`, `obj/`, results, and secrets from images. Use non-root Docker, durable volumes, and Scalar/OpenAPI exposure controls.
+
+Preserve Razor antiforgery and encoding; define CSRF protection for cookie-authenticated APIs. Plan shared Data Protection keys for replicas on k3s/k8s.
