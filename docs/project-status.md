@@ -1,6 +1,14 @@
 # Project Status
 
-## Current: MailDev Server Analysis and Plan
+## Current: Mail and Attachment Storage Requirement
+
+- [PM intake](intake/mail-storage.md): received emails in selected DB; attachments in selected Volume/S3/Azure Blob.
+- Branch: `feature/maildev-server-plan`; existing planning scope only, no implementation.
+- User confirmed: database may store complete raw MIME even when encoded attachment bytes duplicate content in selected attachment storage.
+- BA: updating requirements/PLAN/Tasks; Dev, QA, SEC and DocKeeper follow for this revision. Prior MailDev reviews remain historical.
+- PR: not opened for this revision; remote conflict check and affected verification required before any PR.
+
+## Previous: MailDev Server Analysis and Plan
 
 - Branch: `feature/maildev-server-plan` from fetched `origin/develop`; target `develop`.
 - PM intake: [maildev-server](intake/maildev-server.md). Scope is analysis/planning; no application implementation.
