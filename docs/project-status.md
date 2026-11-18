@@ -1,5 +1,19 @@
 # Project Status
 
+## Current: MailDev Server Analysis and Plan
+
+- Branch: `feature/maildev-server-plan` from fetched `origin/develop`; target `develop`.
+- PM intake: [maildev-server](intake/maildev-server.md). Scope is analysis/planning; no application implementation.
+- User confirmed: first receive/inspect for development; then support real outbound delivery via SMTP/API; expose POP3 server for mail clients to retrieve messages. POP3 is retrieval, not a sending protocol.
+- BA: [requirements](requirements/maildev-server.md), [PLAN](plans/maildev-server/PLAN.md) and [Tasks](plans/maildev-server/Tasks.md) drafted; 15 requirements and 16 planned tasks.
+- Dev: [technical feasibility review](implementation/maildev-server.md) completed for planning scope.
+- QA: [documentation review](qa/maildev-server.md) passed for planning scope; runtime acceptance is not applicable.
+- SEC: [security-design review](security/maildev-server.md) passed for planning scope; runtime security remains untested.
+- DocKeeper: [delivery notes](delivery/maildev-server.md) and [README](../README.md) completed after QA/SEC.
+- Existing platform scaffolding and provider integration are prerequisites, not completed features.
+- Local planning deliverables: complete; all 16 implementation tasks remain planned. Outstanding product/operations decisions are in the requirements and plan.
+- PR status: not opened; conflict check required before any PR.
+
 ## Current: Razor Pages + API Monolith Plan
 
 - Intake: [razor-monolith](intake/razor-monolith.md); scope remains guidelines/planning only.
